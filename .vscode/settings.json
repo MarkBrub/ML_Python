@@ -1,10 +1,15 @@
 {
-    "notebook.output.textLineLimit": 50,
+    "notebook.output.textLineLimit": 30,
     "workbench.colorCustomizations": {
         "terminal.ansiYellow": "#7f56a5e1",
 },
 "cSpell.words": [
+    "eigendoodles",
     "loglog",
-    "NAICS"
-]
+    "NAICS",
+    "Pictionary"
+],
+"cSpell.customDictionaries": {
+
+}
 }
