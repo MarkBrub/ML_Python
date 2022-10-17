@@ -1,5 +1,5 @@
 {
-    "notebook.output.textLineLimit": 30,
+    "notebook.output.textLineLimit": 60,
     "workbench.colorCustomizations": {
         "terminal.ansiYellow": "#7f56a5e1",
 },
