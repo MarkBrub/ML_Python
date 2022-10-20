@@ -14586,7 +14586,51 @@ body[data-format='mobile'] .jp-OutputArea-child .jp-OutputArea-output {
     </script>
     <!-- End of mathjax configuration --></head>
 <body class="jp-Notebook" data-jp-theme-light="true" data-jp-theme-name="JupyterLab Light">
-<div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
+
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
+<h1 id="Forset-Cover-Type-Classification">Forset Cover Type Classification<a class="anchor-link" href="#Forset-Cover-Type-Classification">&#182;</a></h1><p>Lab Assignment Three: Extending Logistic Regression</p>
+<p><em>Mark Brubaker</em></p>
+<h2 id="Business-Understanding">Business Understanding<a class="anchor-link" href="#Business-Understanding">&#182;</a></h2><p>This dataset is made of observations made on the cover type in 30 x 30 meter cells in Roosevelt National Forest of northern Colorado. The cover type is a classification of the main type of tree cover in the area. Along with the cover type, 12 cartographic attributes were also recorded. Each of these attributes are described below.</p>
+<ol>
+<li>Elevation: Elevation in meters</li>
+<li>Aspect: Aspect in degrees azimuth</li>
+<li>Slope: Slope in degrees</li>
+<li>Horizontal_Distance_To_Hydrology: Horz Dist to nearest surface water features</li>
+<li>Vertical_Distance_To_Hydrology: Vert Dist to nearest surface water features</li>
+<li>Horizontal_Distance_To_Roadways: Horz Dist to nearest roadway</li>
+<li>Hillshade_9am: Hillshade index at 9am, summer solstice</li>
+<li>Hillshade_Noon: Hillshade index at noon, summer soltice</li>
+<li>Hillshade_3pm: Hillshade index at 3pm, summer solstice</li>
+<li>Horizontal_Distance_To_Fire_Points: Horz Dist to nearest wildfire ignition points</li>
+<li>Wilderness_Area: 4 binary columns, 1 if observation is within 2000 meters of that wilderness area (1 max)</li>
+<li>Soil_Type: 40 binary columns, 1 if observation is within 2000 meters of that soil type (1 max)</li>
+</ol>
+<p>Both wilderness area and soil type are already one hot encoded. Each of the wilderness area values represent a different part of the national park. The soil types are based on the United States Forest Service Ecological Landtype Units (ELU). The ELU is a classification system that groups similar soils into broad categories based on climate zones and geologic zones. There is an argument to made that soil types shouldn't be one hot encoded as this broad catagoies to carry some relationial data based on zone types. However, for the purposes of this lab, we will assume that the soil types are independent of each other as creating a new encoding scheme that preserved the realtionsships of similar soils while not creating any imbalences would be a significant undertaking and require a lot of domain knowledge.</p>
+<p>The cover type is the target variable. There are seven possible cover types. The cover types are as follows:</p>
+<ol>
+<li>Spruce/Fir</li>
+<li>Lodgepole Pine</li>
+<li>Ponderosa Pine</li>
+<li>Cottonwood/Willow</li>
+<li>Aspen</li>
+<li>Douglas-fir</li>
+<li>Krummholz</li>
+</ol>
+<p>Developing a use case for this data set is tricky because it is explicitly stated that none of the feature were gathered remotely. Furthermore, any method to that could be used to gather the feature data could just as eaisly be used to record the target variable. This makes using a classifier to predict the cover in an existing area largely pointless. Instead a classifier could be used as a generative modle for creating realistic worlds. Games like Dwarven Fortress pride themselves on being able to create complex worlds that are realistic and believable. Ecological research that requires a virtual forest could also generate forests this way. A classifier of this type could be used in coordination with existing world generation techniques to place forests in a more realistic manner.</p>
+<p>Further adding to this use case, in this situation it would be very easy to collect the data needed to feed into a model from a game world without any cover type being present. Features like elevation, hillshade and, aspect could be gathered from a height map and some simple math. The distance to water and roads could be calculated from exisitng world features. Even soil type could be decided based on other existing features like biome data. The only feature that would be difficult to gather would be the wilderness area. However, this could be solved by simply creating a new wilderness area for each new world that is generated. Finally when generating the types of trees that are present in each tile/area of the world, the cover type probabilties could be used as a distribution for the types of trees that are present.</p>
+<p>While this use case diminishes the value of having a high accuracy, it is still important because the goal of using such a complicated model to generate a world is to increase realisim. If the accuracy is too low then the fidelity of the forests in the world will be as well. In the use case of a game the barrier is fairly low for the user to notice the difference between a realistic forest and a fake one. While it is better to have a more realistic model, the consiquence for a low accuracy or an incorrect guess are not signifigant. Ideally, for use in game world generation, an accuracy of ~70% would be possible.  In the use case of ecological research, the barrier is much higher. Incorrect guesses could have a signifigant impact on the research. If there were enough bad guesses the all conclusions from the reasearch would be invalid. In this case, an accuracy of ~95% would be the minimum with ~99% being ideal to get the highest confidence in the results.</p>
+<p>Depending on size of map generated the speed of the classification could be a factor. For game world generation total times should be kept under ~30 seconds but placing forests should only be a small percentage of this time. For ecological research, the speed of the classification is not as important as models can be left to run for long periods of time. Most likely, in both of these cases any generation would done using an already traied model so the speed of the classification would not be a large factor.</p>
+<p>Several studies have been done on classification for this dataset mostly using two main tequiques. The first is a linear discriminant analysis model which acheived ~58.3% accuracy. The second was a traditional neural network which acheived ~70.5% accuracy.</p>
+
+</div>
+</div>
+</div>
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
 <div class="jp-Cell-inputWrapper">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -14596,7 +14640,7 @@ body[data-format='mobile'] .jp-OutputArea-child .jp-OutputArea-output {
      <div class="CodeMirror cm-s-jupyter">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="kn">import</span> <span class="nn">pickle</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-<span class="kn">import</span> <span class="nn">cupy</span> <span class="k">as</span> <span class="nn">cp</span>
+<span class="kn">from</span> <span class="nn">scipy.stats</span> <span class="kn">import</span> <span class="n">normaltest</span>
 <span class="kn">from</span> <span class="nn">sklearn.model_selection</span> <span class="kn">import</span> <span class="n">train_test_split</span>
 <span class="kn">from</span> <span class="nn">sklearn.linear_model</span> <span class="kn">import</span> <span class="n">LogisticRegression</span> <span class="k">as</span> <span class="n">SKLogisticRegression</span>
 <span class="kn">from</span> <span class="nn">sklearn.metrics</span> <span class="kn">import</span> <span class="n">accuracy_score</span>
@@ -14605,7 +14649,6 @@ body[data-format='mobile'] .jp-OutputArea-child .jp-OutputArea-output {
 <span class="kn">import</span> <span class="nn">copy</span>
 <span class="kn">from</span> <span class="nn">numpy</span> <span class="kn">import</span> <span class="n">ma</span>
 <span class="kn">import</span> <span class="nn">numpy.linalg</span>
-<span class="kn">import</span> <span class="nn">cupy.linalg</span>
 <span class="kn">import</span> <span class="nn">time</span>
 
 <span class="n">LOAD_FROM_PICKLE</span> <span class="o">=</span> <span class="kc">True</span>
@@ -14620,6 +14663,18 @@ body[data-format='mobile'] .jp-OutputArea-child .jp-OutputArea-output {
 </div>
 </div>
 
+</div>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
+<p>All imports for the project are done here as well as some global variables that will be used throughout the project.</p>
+
+</div>
+</div>
+</div>
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
 <div class="jp-Cell-inputWrapper">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
@@ -14629,6 +14684,7 @@ body[data-format='mobile'] .jp-OutputArea-child .jp-OutputArea-output {
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="k">if</span> <span class="n">USE_GPU</span><span class="p">:</span>
+    <span class="kn">import</span> <span class="nn">cupy</span> <span class="k">as</span> <span class="nn">cp</span>
     <span class="n">xp</span> <span class="o">=</span> <span class="n">cp</span>
 <span class="k">else</span><span class="p">:</span>
     <span class="n">xp</span> <span class="o">=</span> <span class="n">np</span>
@@ -14639,6 +14695,18 @@ body[data-format='mobile'] .jp-OutputArea-child .jp-OutputArea-output {
 </div>
 </div>
 
+</div>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
+<p>This selects whether the majority of operations will be done on the CPU or GPU. This works because cupy work as a drop in replacement for numpy. If you want to use the GPU, you will need to install cupy which requires CUDA. Which cupy installation you select is based on what version of CUDA you have. Instructions can be found here: <a href="https://docs.cupy.dev/en/stable/install.html">https://docs.cupy.dev/en/stable/install.html</a>.</p>
+
+</div>
+</div>
+</div>
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell   ">
 <div class="jp-Cell-inputWrapper">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
@@ -14650,13 +14718,13 @@ body[data-format='mobile'] .jp-OutputArea-child .jp-OutputArea-output {
 <div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># load the data</span>
 <span class="k">if</span> <span class="n">LOAD_FROM_PICKLE</span><span class="p">:</span>
     <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s1">&#39;../Data/Pickle/cover_data.pickle&#39;</span><span class="p">,</span> <span class="s1">&#39;rb&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">handle</span><span class="p">:</span>
-        <span class="n">data</span> <span class="o">=</span> <span class="n">xp</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">handle</span><span class="p">,</span> <span class="n">allow_pickle</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">handle</span><span class="p">,</span> <span class="n">allow_pickle</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
     <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Loaded data from pickle&#39;</span><span class="p">)</span>
 <span class="k">else</span><span class="p">:</span>
-    <span class="n">data</span> <span class="o">=</span> <span class="n">xp</span><span class="o">.</span><span class="n">loadtxt</span><span class="p">(</span><span class="s1">&#39;../Data/Cov_Type/covtype.data&#39;</span><span class="p">,</span> <span class="n">delimiter</span><span class="o">=</span><span class="s1">&#39;,&#39;</span><span class="p">)</span>
+    <span class="n">data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">loadtxt</span><span class="p">(</span><span class="s1">&#39;../Data/Cov_Type/covtype.data&#39;</span><span class="p">,</span> <span class="n">delimiter</span><span class="o">=</span><span class="s1">&#39;,&#39;</span><span class="p">)</span>
     <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s1">&#39;../Data/Pickle/cover_data.pickle&#39;</span><span class="p">,</span> <span class="s1">&#39;wb&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">handle</span><span class="p">:</span>
-        <span class="n">xp</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="n">handle</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">allow_pickle</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">np</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="n">handle</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">allow_pickle</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 </pre></div>
 
      </div>
@@ -14685,6 +14753,77 @@ body[data-format='mobile'] .jp-OutputArea-child .jp-OutputArea-output {
 
 </div>
 
+</div>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
+<p>The data can be loaded from a pickle object to save time</p>
+
+</div>
+</div>
+</div>
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell   ">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[&nbsp;]:</div>
+<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+     <div class="CodeMirror cm-s-jupyter">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># check for missing values</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Number of missing values: </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">data</span><span class="p">))))</span>
+
+<span class="c1"># check for duplicates as the number of unique rows should be equal to the number of rows</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Number of duplicate rows: </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]))</span>
+
+<span class="c1"># cp.unique along an axis is not implemented yet so it had to be done in numpy</span>
+<span class="k">if</span> <span class="n">USE_GPU</span><span class="p">:</span>
+    <span class="c1"># convert to cupy array</span>
+    <span class="n">data</span> <span class="o">=</span> <span class="n">cp</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+</pre></div>
+
+     </div>
+</div>
+</div>
+</div>
+
+<div class="jp-Cell-outputWrapper">
+<div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
+</div>
+
+
+<div class="jp-OutputArea jp-Cell-outputArea">
+<div class="jp-OutputArea-child">
+    
+    <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+
+
+<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain">
+<pre>Number of missing values: 0
+Number of duplicate rows: 0
+</pre>
+</div>
+</div>
+
+</div>
+
+</div>
+
+</div>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
+<p>The data is checked for missing values and duplicates</p>
+
+</div>
+</div>
+</div>
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell   ">
 <div class="jp-Cell-inputWrapper">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
@@ -14708,9 +14847,6 @@ body[data-format='mobile'] .jp-OutputArea-child .jp-OutputArea-output {
 <span class="c1"># split the data into features and labels</span>
 <span class="n">X</span> <span class="o">=</span> <span class="n">data</span><span class="p">[:,</span> <span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
 <span class="n">y</span> <span class="o">=</span> <span class="n">data</span><span class="p">[:,</span> <span class="o">-</span><span class="mi">1</span><span class="p">]</span>
-
-<span class="c1"># normalize the features</span>
-<span class="n">X</span> <span class="o">=</span> <span class="p">(</span><span class="n">X</span> <span class="o">-</span> <span class="n">X</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">))</span> <span class="o">/</span> <span class="p">(</span><span class="n">X</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span> <span class="o">-</span> <span class="n">X</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span> <span class="o">+</span> <span class="mf">.0000001</span><span class="p">)</span>
 </pre></div>
 
      </div>
@@ -14740,45 +14876,18 @@ New data shape: (19229, 55)
 
 </div>
 
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell   ">
+</div>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
 <div class="jp-Cell-inputWrapper">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
-<div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[&nbsp;]:</div>
-<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
-     <div class="CodeMirror cm-s-jupyter">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="s1">&#39;X.shape =&#39;</span><span class="p">,</span> <span class="n">X</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;y.shape =&#39;</span><span class="p">,</span> <span class="n">y</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
-</pre></div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
+<p>Here, if selected, the data is shrunk so that every class has the same number of observations. This is done to prevent the model from overfitting to the majority class. This is done by randomly selecting the same number of observations from each class. The number of observations is determined by the size of the smallest class. The leaves each class with 2747 observations, totaling 19269 observations. Even though this is a significant reduction in the size of the dataset, it is still more than large enough to train a model on. Splitting the data into training and testing is important so the model can be evaluated on data it has never seen before.</p>
 
-     </div>
 </div>
 </div>
 </div>
-
-<div class="jp-Cell-outputWrapper">
-<div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
-</div>
-
-
-<div class="jp-OutputArea jp-Cell-outputArea">
-<div class="jp-OutputArea-child">
-    
-    <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
-
-
-<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain">
-<pre>X.shape = (19229, 54)
-y.shape = (19229,)
-</pre>
-</div>
-</div>
-
-</div>
-
-</div>
-
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
 <div class="jp-Cell-inputWrapper">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
@@ -14788,6 +14897,48 @@ y.shape = (19229,)
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="k">if</span> <span class="n">USE_GPU</span><span class="p">:</span>
+    <span class="n">X_norm_check</span> <span class="o">=</span> <span class="n">X</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
+<span class="k">else</span><span class="p">:</span>
+    <span class="n">X_norm_check</span> <span class="o">=</span> <span class="n">X</span>
+
+<span class="c1"># check if the data is normally distributed</span>
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">X_norm_check</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]):</span>
+    <span class="n">stat</span><span class="p">,</span> <span class="n">p</span> <span class="o">=</span> <span class="n">normaltest</span><span class="p">(</span><span class="n">X_norm_check</span><span class="p">[:,</span> <span class="n">i</span><span class="p">])</span>
+    <span class="k">if</span> <span class="n">p</span> <span class="o">&gt;</span> <span class="mf">0.05</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Feature </span><span class="si">{}</span><span class="s1"> is normally distributed&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">i</span><span class="p">))</span>
+
+<span class="c1"># normalize the features</span>
+<span class="n">X</span><span class="p">[:,</span> <span class="p">:</span><span class="mi">10</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">X</span><span class="p">[:,</span> <span class="p">:</span><span class="mi">10</span><span class="p">]</span> <span class="o">-</span> <span class="n">X</span><span class="p">[:,</span> <span class="p">:</span><span class="mi">10</span><span class="p">]</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">))</span> <span class="o">/</span> <span class="p">(</span><span class="n">X</span><span class="p">[:,</span> <span class="p">:</span><span class="mi">10</span><span class="p">]</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span> <span class="o">-</span> <span class="n">X</span><span class="p">[:,</span> <span class="p">:</span><span class="mi">10</span><span class="p">]</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span> <span class="o">+</span> <span class="mf">1e-8</span><span class="p">)</span>
+</pre></div>
+
+     </div>
+</div>
+</div>
+</div>
+
+</div>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
+<p>First the features are checked to see if they have a normal distribution This will effect if the data is normalized or standardized. As can be seen by the lack of output, none of the features have a normal distribution. This means that the data will be normalized.</p>
+<p>Next the quanitative data is  normalized so that features with higher values don't dominate the model. This is done by adjusting the values so that they are between 0 and 1. This is only done on the quanitative data as to not effect the one hot encoded data.</p>
+
+</div>
+</div>
+</div>
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[&nbsp;]:</div>
+<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+     <div class="CodeMirror cm-s-jupyter">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># split the data into train and test</span>
+<span class="k">if</span> <span class="n">USE_GPU</span><span class="p">:</span>
     <span class="n">X_train</span><span class="p">,</span> <span class="n">X_test</span><span class="p">,</span> <span class="n">y_train</span><span class="p">,</span> <span class="n">y_test</span> <span class="o">=</span> <span class="n">train_test_split</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">train_size</span><span class="o">=</span><span class="mf">0.8</span><span class="p">,</span> <span class="n">test_size</span><span class="o">=</span><span class="mf">0.2</span><span class="p">,</span> <span class="n">stratify</span><span class="o">=</span><span class="n">y</span><span class="o">.</span><span class="n">get</span><span class="p">())</span>
 <span class="k">else</span><span class="p">:</span>
     <span class="n">X_train</span><span class="p">,</span> <span class="n">X_test</span><span class="p">,</span> <span class="n">y_train</span><span class="p">,</span> <span class="n">y_test</span> <span class="o">=</span> <span class="n">train_test_split</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">train_size</span><span class="o">=</span><span class="mf">0.8</span><span class="p">,</span> <span class="n">test_size</span><span class="o">=</span><span class="mf">0.2</span><span class="p">,</span> <span class="n">stratify</span><span class="o">=</span><span class="n">y</span><span class="p">)</span>
@@ -14798,57 +14949,18 @@ y.shape = (19229,)
 </div>
 </div>
 
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell   ">
+</div>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
 <div class="jp-Cell-inputWrapper">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
-<div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[&nbsp;]:</div>
-<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
-     <div class="CodeMirror cm-s-jupyter">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="o">%%time</span>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
+<p>Because there is now equal representation among classes, using an 80/20 split for training and testing is acceptable. Furthermore, the data is stratified based on class so that the same proportion of each class is in both the training and testing data is the same. 2747 instances of each class should be enough to to ensure every class is well represented in both the training and testing data but this guarantees it. This should prevent both underfitting and overfitting.</p>
 
-<span class="n">lr_sk</span> <span class="o">=</span> <span class="n">SKLogisticRegression</span><span class="p">(</span><span class="n">solver</span><span class="o">=</span><span class="s1">&#39;liblinear&#39;</span><span class="p">)</span> <span class="c1"># all params default</span>
-
-<span class="k">if</span> <span class="n">USE_GPU</span><span class="p">:</span>
-    <span class="n">lr_sk</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X_train</span><span class="o">.</span><span class="n">get</span><span class="p">(),</span> <span class="n">y_train</span><span class="o">.</span><span class="n">get</span><span class="p">())</span>
-    <span class="n">yhat</span> <span class="o">=</span> <span class="n">lr_sk</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">X_test</span><span class="o">.</span><span class="n">get</span><span class="p">())</span>
-    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Accuracy of: &#39;</span><span class="p">,</span><span class="n">accuracy_score</span><span class="p">(</span><span class="n">y_test</span><span class="o">.</span><span class="n">get</span><span class="p">(),</span> <span class="n">yhat</span><span class="p">))</span>
-<span class="k">else</span><span class="p">:</span>
-    <span class="n">lr_sk</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X_train</span><span class="p">,</span> <span class="n">y_train</span><span class="p">)</span>
-    <span class="n">yhat</span> <span class="o">=</span> <span class="n">lr_sk</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">X_test</span><span class="p">)</span>
-    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Accuracy of: &#39;</span><span class="p">,</span><span class="n">accuracy_score</span><span class="p">(</span><span class="n">y_test</span><span class="p">,</span> <span class="n">yhat</span><span class="p">))</span>
-    
-</pre></div>
-
-     </div>
 </div>
 </div>
 </div>
-
-<div class="jp-Cell-outputWrapper">
-<div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
-</div>
-
-
-<div class="jp-OutputArea jp-Cell-outputArea">
-<div class="jp-OutputArea-child">
-    
-    <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
-
-
-<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain">
-<pre>Accuracy of:  0.6781071242849714
-CPU times: user 372 ms, sys: 149 ms, total: 522 ms
-Wall time: 291 ms
-</pre>
-</div>
-</div>
-
-</div>
-
-</div>
-
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
 <div class="jp-Cell-inputWrapper">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
@@ -14876,6 +14988,18 @@ Wall time: 291 ms
 </div>
 </div>
 
+</div>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
+<p>These functions make calculating/printing the accuracy of madels eaiser and cleaner.</p>
+
+</div>
+</div>
+</div>
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
 <div class="jp-Cell-inputWrapper">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
@@ -14928,11 +15052,11 @@ Wall time: 291 ms
             <span class="n">y</span> <span class="o">=</span> <span class="n">y</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
 
         <span class="c1"># has to be run on the CPU because of the use of the ma module</span>
-        <span class="k">return</span> <span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">ma</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">g</span><span class="p">[</span><span class="n">y</span> <span class="o">==</span> <span class="mi">1</span><span class="p">]))</span> <span class="o">-</span> <span class="n">ma</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">g</span><span class="p">[</span><span class="n">y</span> <span class="o">==</span> <span class="mi">0</span><span class="p">]))</span>
+        <span class="k">return</span> <span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">ma</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">g</span><span class="p">[</span><span class="n">y</span> <span class="o">==</span> <span class="mi">1</span><span class="p">]))</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">ma</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">g</span><span class="p">[</span><span class="n">y</span> <span class="o">==</span> <span class="mi">0</span><span class="p">]))</span>
 
     <span class="k">def</span> <span class="nf">_add_regularization</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">grad</span><span class="p">):</span>
         <span class="n">L1</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">C1</span> <span class="o">*</span> <span class="n">xp</span><span class="o">.</span><span class="n">sign</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">w_</span><span class="p">[</span><span class="mi">1</span><span class="p">:])</span>
-        <span class="n">L2</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">C2</span> <span class="o">-</span><span class="mi">2</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">w_</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span>
+        <span class="n">L2</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">C2</span> <span class="o">*</span> <span class="o">-</span><span class="mi">2</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">w_</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span>
         <span class="n">grad</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span> <span class="o">+=</span> <span class="n">L1</span> <span class="o">+</span> <span class="n">L2</span>
 
         <span class="k">return</span> <span class="n">grad</span>
@@ -14941,8 +15065,6 @@ Wall time: 291 ms
         <span class="k">match</span> <span class="bp">self</span><span class="o">.</span><span class="n">solver</span><span class="p">:</span>
             <span class="k">case</span> <span class="s1">&#39;base&#39;</span> <span class="o">|</span> <span class="s1">&#39;line_search&#39;</span><span class="p">:</span>
                 <span class="n">ydiff</span> <span class="o">=</span> <span class="n">y</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">predict_proba</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">add_bias</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span><span class="o">.</span><span class="n">ravel</span><span class="p">()</span> <span class="c1"># get y difference</span>
-                <span class="c1"># scale ydiff by ratio of positive to negative samples</span>
-                <span class="c1"># ydiff *= (y == 1).sum() / (y == 0).sum() * 0.5</span>
                 <span class="n">gradient</span> <span class="o">=</span> <span class="n">xp</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">X</span> <span class="o">*</span> <span class="n">ydiff</span><span class="p">[:,</span> <span class="n">xp</span><span class="o">.</span><span class="n">newaxis</span><span class="p">],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span> <span class="c1"># make ydiff a column vector and multiply through</span>
             <span class="k">case</span> <span class="s1">&#39;stochastic&#39;</span><span class="p">:</span>
                 <span class="n">idx</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">rand</span><span class="p">()</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">y</span><span class="p">))</span> <span class="c1"># grab random instance</span>
@@ -14954,24 +15076,24 @@ Wall time: 291 ms
                 <span class="n">gradient</span> <span class="o">=</span> <span class="n">xp</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">X</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span> <span class="o">*</span> <span class="n">ydiff</span><span class="p">[:,</span> <span class="n">xp</span><span class="o">.</span><span class="n">newaxis</span><span class="p">],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span> <span class="c1"># make ydiff a column vector and multiply through</span>
             <span class="k">case</span> <span class="s1">&#39;newton&#39;</span><span class="p">:</span>
                 <span class="n">g</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">predict_proba</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">add_bias</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span><span class="o">.</span><span class="n">ravel</span><span class="p">()</span> <span class="c1"># get sigmoid value for all classes</span>
+                <span class="n">ydiff</span> <span class="o">=</span> <span class="n">y</span> <span class="o">-</span> <span class="n">g</span> <span class="c1"># get y difference</span>
+                <span class="n">gradient</span> <span class="o">=</span> <span class="n">xp</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">X</span> <span class="o">*</span> <span class="n">ydiff</span><span class="p">[:,</span> <span class="n">xp</span><span class="o">.</span><span class="n">newaxis</span><span class="p">],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span> <span class="c1"># make ydiff a column vector and multiply through</span>
                 
                 <span class="c1"># the hessian has no L1 regularization and L2 will only be included if C2 is not 0</span>
-                <span class="n">hessian</span> <span class="o">=</span> <span class="p">(</span><span class="n">X</span> <span class="o">*</span> <span class="p">(</span><span class="n">g</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">g</span><span class="p">))[:,</span> <span class="n">xp</span><span class="o">.</span><span class="n">newaxis</span><span class="p">])</span><span class="o">.</span><span class="n">T</span> <span class="o">@</span> <span class="n">X</span> <span class="o">-</span> <span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">C2</span><span class="p">)</span> <span class="c1"># calculate the hessian</span>
-
+                <span class="n">hessian</span> <span class="o">=</span> <span class="p">(</span><span class="n">X</span> <span class="o">*</span> <span class="p">(</span><span class="n">g</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">g</span><span class="p">))[:,</span> <span class="n">xp</span><span class="o">.</span><span class="n">newaxis</span><span class="p">])</span><span class="o">.</span><span class="n">T</span> <span class="o">@</span> <span class="n">X</span> <span class="o">-</span> <span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">C2</span><span class="p">)</span><span class="c1"># calculate the hessian</span>
                 <span class="c1"># I swapped X.T @ np.diag(g*(1-g)) with (X * (g*(1-g))[:, xp.newaxis]).T</span>
                 <span class="c1"># They work the same but the latter does the diagonal multiplication using way less memory</span>
                 <span class="c1"># The reduction in memory allows the use of the GPU for the hessian calculation</span>
                 <span class="c1"># otherwise my GPU runs out of memory</span>
 
-                <span class="n">ydiff</span> <span class="o">=</span> <span class="n">y</span> <span class="o">-</span> <span class="n">g</span> <span class="c1"># get y difference</span>
-                <span class="n">gradient</span> <span class="o">=</span> <span class="n">xp</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">X</span> <span class="o">*</span> <span class="n">ydiff</span><span class="p">[:,</span> <span class="n">np</span><span class="o">.</span><span class="n">newaxis</span><span class="p">],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span> <span class="c1"># make ydiff a column vector and multiply through</span>
         
         <span class="n">gradient</span> <span class="o">=</span> <span class="n">gradient</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">w_</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span> <span class="c1"># make gradient a column vector</span>
         <span class="n">gradient</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_add_regularization</span><span class="p">(</span><span class="n">gradient</span><span class="p">)</span>
 
         <span class="c1"># the hessian is special</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">solver</span> <span class="o">==</span> <span class="s1">&#39;newton&#39;</span><span class="p">:</span>
-            <span class="k">return</span> <span class="n">xp</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">pinv</span><span class="p">(</span><span class="n">hessian</span><span class="p">)</span> <span class="o">@</span> <span class="n">gradient</span>
+            <span class="c1"># the cupy version of linlog.pinv is not stable so I&#39;m just using the numpy version</span>
+            <span class="k">return</span> <span class="n">cp</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">pinv</span><span class="p">(</span><span class="n">hessian</span><span class="o">.</span><span class="n">get</span><span class="p">(),</span> <span class="n">hermitian</span><span class="o">=</span><span class="kc">True</span><span class="p">))</span> <span class="o">@</span> <span class="n">gradient</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">gradient</span>
     
@@ -15022,6 +15144,18 @@ Wall time: 291 ms
 </div>
 </div>
 
+</div>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
+<p>This class handles the individual binary logistic regression models. Each solver type is handeled deifferently in the _get_gradient function. Inside the _get_gradient function the _add_regularzation function is called and adds it as is required.</p>
+
+</div>
+</div>
+</div>
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
 <div class="jp-Cell-inputWrapper">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
@@ -15058,19 +15192,14 @@ Wall time: 291 ms
         <span class="bp">self</span><span class="o">.</span><span class="n">classifiers_</span> <span class="o">=</span> <span class="p">[]</span> <span class="c1"># will fill this array with binary classifiers</span>
         
         <span class="c1"># create a classifier for each class</span>
-        <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">num_unique_classes</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">yval</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">unique_</span><span class="p">:</span>
             <span class="n">blr</span> <span class="o">=</span> <span class="n">BinaryLogisticRegression</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">eta</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">solver</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">iters</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">C1</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">C2</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">line_iters</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">batch_size</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">classifiers_</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">blr</span><span class="p">)</span>
 
-        <span class="c1"># print(&#39;Classifiers created&#39;)</span>
-
-        <span class="c1"># train each classifier</span>
-        <span class="k">for</span> <span class="n">blr</span><span class="p">,</span> <span class="n">yval</span><span class="p">,</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">classifiers_</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">unique_</span><span class="p">,</span> <span class="nb">range</span><span class="p">(</span><span class="n">num_unique_classes</span><span class="p">)):</span>
-            
+            <span class="c1"># create a binary label for each class and train the classifier</span>
             <span class="n">y_binary</span> <span class="o">=</span> <span class="p">(</span><span class="n">y</span> <span class="o">==</span> <span class="n">yval</span><span class="p">)</span>
             <span class="n">blr</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y_binary</span><span class="p">)</span>
-            <span class="c1"># print(&#39;Classifier Fitted %d of %d&#39; % (i + 1, num_unique_classes), end=&#39;\r&#39;)</span>
-        <span class="c1"># print(&#39;All Classifiers Fitted        &#39;)</span>
+
             
         <span class="c1"># save all the weights into one matrix, separate column for each class</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">w_</span> <span class="o">=</span> <span class="n">xp</span><span class="o">.</span><span class="n">hstack</span><span class="p">([</span><span class="n">x</span><span class="o">.</span><span class="n">w_</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">classifiers_</span><span class="p">])</span><span class="o">.</span><span class="n">T</span>
@@ -15084,6 +15213,7 @@ Wall time: 291 ms
     
     <span class="k">def</span> <span class="nf">predict</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">X</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">unique_</span><span class="p">[</span><span class="n">xp</span><span class="o">.</span><span class="n">argmax</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">predict_proba</span><span class="p">(</span><span class="n">X</span><span class="p">),</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)]</span> <span class="c1"># take argmax along row</span>
+            
 </pre></div>
 
      </div>
@@ -15091,6 +15221,18 @@ Wall time: 291 ms
 </div>
 </div>
 
+</div>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
+<p>This is the main logistic regression class that is called by the user. It creates smaller binary logistic regression classes to make it's classifications.</p>
+
+</div>
+</div>
+</div>
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell   ">
 <div class="jp-Cell-inputWrapper">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
@@ -15099,12 +15241,18 @@ Wall time: 291 ms
 <div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[&nbsp;]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">lr</span> <span class="o">=</span> <span class="n">LogisticRegression</span><span class="p">(</span><span class="mf">.1</span><span class="p">,</span> <span class="n">solver</span><span class="o">=</span><span class="s1">&#39;base&#39;</span><span class="p">,</span> <span class="n">iterations</span><span class="o">=</span><span class="mi">500</span><span class="p">,</span> <span class="n">C1</span><span class="o">=</span><span class="mf">0.01</span><span class="p">,</span> <span class="n">C2</span><span class="o">=</span><span class="mf">0.01</span><span class="p">)</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="o">%%time</span>
 
-<span class="n">lr</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X_train</span><span class="p">,</span> <span class="n">y_train</span><span class="p">)</span>
-<span class="n">yhat</span> <span class="o">=</span> <span class="n">lr</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">X_test</span><span class="p">)</span>
+<span class="n">lr_sk</span> <span class="o">=</span> <span class="n">SKLogisticRegression</span><span class="p">(</span><span class="n">solver</span><span class="o">=</span><span class="s1">&#39;liblinear&#39;</span><span class="p">)</span> <span class="c1"># all params default</span>
 
-<span class="n">print_accuracy</span><span class="p">(</span><span class="n">y_test</span><span class="p">,</span> <span class="n">yhat</span><span class="p">)</span>
+<span class="k">if</span> <span class="n">USE_GPU</span><span class="p">:</span>
+    <span class="n">lr_sk</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X_train</span><span class="o">.</span><span class="n">get</span><span class="p">(),</span> <span class="n">y_train</span><span class="o">.</span><span class="n">get</span><span class="p">())</span>
+    <span class="n">yhat</span> <span class="o">=</span> <span class="n">lr_sk</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">X_test</span><span class="o">.</span><span class="n">get</span><span class="p">())</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Accuracy of: &#39;</span><span class="p">,</span> <span class="n">accuracy_score</span><span class="p">(</span><span class="n">y_test</span><span class="o">.</span><span class="n">get</span><span class="p">(),</span> <span class="n">yhat</span><span class="p">))</span>
+<span class="k">else</span><span class="p">:</span>
+    <span class="n">lr_sk</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X_train</span><span class="p">,</span> <span class="n">y_train</span><span class="p">)</span>
+    <span class="n">yhat</span> <span class="o">=</span> <span class="n">lr_sk</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">X_test</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Accuracy of: &#39;</span><span class="p">,</span> <span class="n">accuracy_score</span><span class="p">(</span><span class="n">y_test</span><span class="p">,</span> <span class="n">yhat</span><span class="p">))</span>    
 </pre></div>
 
      </div>
@@ -15124,7 +15272,9 @@ Wall time: 291 ms
 
 
 <div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain">
-<pre>Accuracy of:  52.106 %
+<pre>Accuracy of:  0.6809672386895476
+CPU times: user 342 ms, sys: 126 ms, total: 468 ms
+Wall time: 288 ms
 </pre>
 </div>
 </div>
@@ -15133,216 +15283,18 @@ Wall time: 291 ms
 
 </div>
 
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell   ">
+</div>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
 <div class="jp-Cell-inputWrapper">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
-<div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[&nbsp;]:</div>
-<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
-     <div class="CodeMirror cm-s-jupyter">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">lr</span> <span class="o">=</span> <span class="n">LogisticRegression</span><span class="p">(</span><span class="mf">.1</span><span class="p">,</span> <span class="n">solver</span><span class="o">=</span><span class="s1">&#39;line_search&#39;</span><span class="p">,</span> <span class="n">iterations</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">C1</span><span class="o">=</span><span class="mf">0.01</span><span class="p">,</span> <span class="n">C2</span><span class="o">=</span><span class="mf">0.01</span><span class="p">,</span> <span class="n">line_iters</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
+<p>The scikit learn is used to create a baseline model to compare the custom models to.</p>
 
-<span class="n">lr</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X_train</span><span class="p">,</span> <span class="n">y_train</span><span class="p">)</span>
-<span class="n">yhat</span> <span class="o">=</span> <span class="n">lr</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">X_test</span><span class="p">)</span>
-
-<span class="n">print_accuracy</span><span class="p">(</span><span class="n">y_test</span><span class="p">,</span> <span class="n">yhat</span><span class="p">)</span>
-</pre></div>
-
-     </div>
 </div>
 </div>
 </div>
-
-<div class="jp-Cell-outputWrapper">
-<div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
-</div>
-
-
-<div class="jp-OutputArea jp-Cell-outputArea">
-<div class="jp-OutputArea-child">
-    
-    <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
-
-
-<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain">
-<pre>Accuracy of:  53.432 %
-</pre>
-</div>
-</div>
-
-</div>
-
-</div>
-
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell   ">
-<div class="jp-Cell-inputWrapper">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[&nbsp;]:</div>
-<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
-     <div class="CodeMirror cm-s-jupyter">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">lr</span> <span class="o">=</span> <span class="n">LogisticRegression</span><span class="p">(</span><span class="mf">.1</span><span class="p">,</span> <span class="n">solver</span><span class="o">=</span><span class="s1">&#39;line_search&#39;</span><span class="p">,</span> <span class="n">iterations</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">C1</span><span class="o">=</span><span class="mf">0.01</span><span class="p">,</span> <span class="n">C2</span><span class="o">=</span><span class="mf">0.01</span><span class="p">,</span> <span class="n">line_iters</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>
-
-<span class="n">lr</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X_train</span><span class="p">,</span> <span class="n">y_train</span><span class="p">)</span>
-<span class="n">yhat</span> <span class="o">=</span> <span class="n">lr</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">X_test</span><span class="p">)</span>
-
-<span class="n">print_accuracy</span><span class="p">(</span><span class="n">y_test</span><span class="p">,</span> <span class="n">yhat</span><span class="p">)</span>
-</pre></div>
-
-     </div>
-</div>
-</div>
-</div>
-
-<div class="jp-Cell-outputWrapper">
-<div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
-</div>
-
-
-<div class="jp-OutputArea jp-Cell-outputArea">
-<div class="jp-OutputArea-child">
-    
-    <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
-
-
-<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain">
-<pre>Accuracy of:  53.224 %
-</pre>
-</div>
-</div>
-
-</div>
-
-</div>
-
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell   ">
-<div class="jp-Cell-inputWrapper">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[&nbsp;]:</div>
-<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
-     <div class="CodeMirror cm-s-jupyter">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">lr</span> <span class="o">=</span> <span class="n">LogisticRegression</span><span class="p">(</span><span class="mf">.001</span><span class="p">,</span> <span class="n">solver</span><span class="o">=</span><span class="s1">&#39;stochastic&#39;</span><span class="p">,</span> <span class="n">iterations</span><span class="o">=</span><span class="mi">1000</span><span class="p">,</span> <span class="n">C1</span><span class="o">=</span><span class="mf">0.01</span><span class="p">,</span> <span class="n">C2</span><span class="o">=</span><span class="mf">0.01</span><span class="p">)</span>
-
-<span class="n">lr</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X_train</span><span class="p">,</span> <span class="n">y_train</span><span class="p">)</span>
-<span class="n">yhat</span> <span class="o">=</span> <span class="n">lr</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">X_test</span><span class="p">)</span>
-
-<span class="n">print_accuracy</span><span class="p">(</span><span class="n">y_test</span><span class="p">,</span> <span class="n">yhat</span><span class="p">)</span>
-</pre></div>
-
-     </div>
-</div>
-</div>
-</div>
-
-<div class="jp-Cell-outputWrapper">
-<div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
-</div>
-
-
-<div class="jp-OutputArea jp-Cell-outputArea">
-<div class="jp-OutputArea-child">
-    
-    <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
-
-
-<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain">
-<pre>Accuracy of:  41.134 %
-</pre>
-</div>
-</div>
-
-</div>
-
-</div>
-
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell   ">
-<div class="jp-Cell-inputWrapper">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[&nbsp;]:</div>
-<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
-     <div class="CodeMirror cm-s-jupyter">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">lr</span> <span class="o">=</span> <span class="n">LogisticRegression</span><span class="p">(</span><span class="mf">.1</span><span class="p">,</span> <span class="n">solver</span><span class="o">=</span><span class="s1">&#39;mini_batch&#39;</span><span class="p">,</span> <span class="n">iterations</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">C1</span><span class="o">=</span><span class="mf">0.01</span><span class="p">,</span> <span class="n">C2</span><span class="o">=</span><span class="mf">0.01</span><span class="p">,</span> <span class="n">batch_size</span><span class="o">=</span><span class="mi">2000</span><span class="p">)</span>
-
-<span class="n">lr</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X_train</span><span class="p">,</span> <span class="n">y_train</span><span class="p">)</span>
-<span class="n">yhat</span> <span class="o">=</span> <span class="n">lr</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">X_test</span><span class="p">)</span>
-
-<span class="n">print_accuracy</span><span class="p">(</span><span class="n">y_test</span><span class="p">,</span> <span class="n">yhat</span><span class="p">)</span>
-</pre></div>
-
-     </div>
-</div>
-</div>
-</div>
-
-<div class="jp-Cell-outputWrapper">
-<div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
-</div>
-
-
-<div class="jp-OutputArea jp-Cell-outputArea">
-<div class="jp-OutputArea-child">
-    
-    <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
-
-
-<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain">
-<pre>Accuracy of:  46.75 %
-</pre>
-</div>
-</div>
-
-</div>
-
-</div>
-
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell   ">
-<div class="jp-Cell-inputWrapper">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[&nbsp;]:</div>
-<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
-     <div class="CodeMirror cm-s-jupyter">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">lr</span> <span class="o">=</span> <span class="n">LogisticRegression</span><span class="p">(</span><span class="mf">.1</span><span class="p">,</span> <span class="n">solver</span><span class="o">=</span><span class="s1">&#39;newton&#39;</span><span class="p">,</span> <span class="n">iterations</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">C1</span><span class="o">=</span><span class="mf">0.01</span><span class="p">,</span> <span class="n">C2</span><span class="o">=</span><span class="mf">0.01</span><span class="p">)</span>
-
-<span class="n">lr</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X_train</span><span class="p">,</span> <span class="n">y_train</span><span class="p">)</span>
-<span class="n">yhat</span> <span class="o">=</span> <span class="n">lr</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">X_test</span><span class="p">)</span>
-
-<span class="n">print_accuracy</span><span class="p">(</span><span class="n">y_test</span><span class="p">,</span> <span class="n">yhat</span><span class="p">)</span>
-</pre></div>
-
-     </div>
-</div>
-</div>
-</div>
-
-<div class="jp-Cell-outputWrapper">
-<div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
-</div>
-
-
-<div class="jp-OutputArea jp-Cell-outputArea">
-<div class="jp-OutputArea-child">
-    
-    <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
-
-
-<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain">
-<pre>Accuracy of:  63.807 %
-</pre>
-</div>
-</div>
-
-</div>
-
-</div>
-
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell   ">
 <div class="jp-Cell-inputWrapper">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
@@ -15352,36 +15304,37 @@ Wall time: 291 ms
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">solvers</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;base&#39;</span><span class="p">,</span> <span class="s1">&#39;line_search&#39;</span><span class="p">,</span> <span class="s1">&#39;stochastic&#39;</span><span class="p">,</span> <span class="s1">&#39;mini_batch&#39;</span><span class="p">,</span> <span class="s1">&#39;newton&#39;</span><span class="p">]</span>
-<span class="n">base_num_iters</span> <span class="o">=</span> <span class="p">[</span><span class="mi">100</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="mi">200</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span> <span class="c1"># each solver has a different number of base iterations</span>
-<span class="n">iter_multipliers</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">10</span><span class="p">]</span>
-<span class="n">etas</span> <span class="o">=</span> <span class="p">[</span><span class="mf">.001</span><span class="p">,</span> <span class="mf">.01</span><span class="p">,</span> <span class="mf">.1</span><span class="p">]</span>
-<span class="n">Cs</span> <span class="o">=</span> <span class="p">[(</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">),</span> <span class="p">(</span><span class="mf">0.01</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">),</span> <span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.01</span><span class="p">),</span> <span class="p">(</span><span class="mf">0.01</span><span class="p">,</span> <span class="mf">0.01</span><span class="p">)]</span>
+<span class="n">num_iters</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1000</span><span class="p">,</span> <span class="mi">150</span><span class="p">,</span> <span class="mi">1500</span><span class="p">,</span> <span class="mi">200</span><span class="p">,</span> <span class="mi">12</span><span class="p">]</span> <span class="c1"># each solver has a different number of base iterations</span>
+<span class="n">etas</span> <span class="o">=</span> <span class="p">[</span><span class="mf">.001</span><span class="p">,</span> <span class="mf">.003</span><span class="p">,</span> <span class="mf">.01</span><span class="p">,</span> <span class="mf">.03</span><span class="p">,</span> <span class="mf">.1</span><span class="p">,</span> <span class="mf">.3</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">]</span> <span class="c1"># each increasse in eta is ~3x</span>
+<span class="n">Cs</span> <span class="o">=</span> <span class="p">[(</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">),</span> <span class="p">(</span><span class="mf">0.01</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">),</span> <span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.01</span><span class="p">),</span> <span class="p">(</span><span class="mf">0.01</span><span class="p">,</span> <span class="mf">0.01</span><span class="p">)]</span> <span class="c1"># defines if we use L1 or L2 regularization or both</span>
 
 <span class="n">results</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="n">outputs</span> <span class="o">=</span> <span class="p">[]</span>
 
 <span class="k">for</span> <span class="n">solver</span> <span class="ow">in</span> <span class="n">solvers</span><span class="p">:</span>
-    <span class="k">for</span> <span class="n">iter_multiplier</span> <span class="ow">in</span> <span class="n">iter_multipliers</span><span class="p">:</span>
-        <span class="k">for</span> <span class="n">eta</span> <span class="ow">in</span> <span class="n">etas</span><span class="p">:</span>
-            <span class="k">for</span> <span class="n">C1</span><span class="p">,</span> <span class="n">C2</span> <span class="ow">in</span> <span class="n">Cs</span><span class="p">:</span>
-                <span class="c1"># time the training in milliseconds</span>
-                <span class="n">start</span> <span class="o">=</span> <span class="nb">round</span><span class="p">(</span><span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span> <span class="o">*</span> <span class="mi">1000</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">eta</span> <span class="ow">in</span> <span class="n">etas</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">C1</span><span class="p">,</span> <span class="n">C2</span> <span class="ow">in</span> <span class="n">Cs</span><span class="p">:</span>
+            <span class="c1"># time the training in milliseconds</span>
+            <span class="n">start</span> <span class="o">=</span> <span class="nb">round</span><span class="p">(</span><span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span> <span class="o">*</span> <span class="mi">1000</span><span class="p">)</span>
 
-                <span class="n">lr</span> <span class="o">=</span> <span class="n">LogisticRegression</span><span class="p">(</span><span class="n">eta</span><span class="p">,</span> <span class="n">solver</span><span class="o">=</span><span class="n">solver</span><span class="p">,</span> <span class="n">iterations</span><span class="o">=</span><span class="p">(</span><span class="n">base_num_iters</span><span class="p">[</span><span class="n">solvers</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">solver</span><span class="p">)]</span> <span class="o">*</span> <span class="n">iter_multiplier</span><span class="p">),</span> <span class="n">C1</span><span class="o">=</span><span class="n">C1</span><span class="p">,</span> <span class="n">C2</span><span class="o">=</span><span class="n">C2</span><span class="p">)</span>
-                <span class="n">lr</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X_train</span><span class="p">,</span> <span class="n">y_train</span><span class="p">)</span>
-                <span class="n">yhat</span> <span class="o">=</span> <span class="n">lr</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">X_test</span><span class="p">)</span>
+            <span class="c1"># the extra arguments will be ignored by the solvers that don&#39;t use them</span>
+            <span class="n">lr</span> <span class="o">=</span> <span class="n">LogisticRegression</span><span class="p">(</span><span class="n">eta</span><span class="p">,</span> <span class="n">solver</span><span class="o">=</span><span class="n">solver</span><span class="p">,</span> <span class="n">iterations</span><span class="o">=</span><span class="p">(</span><span class="n">num_iters</span><span class="p">[</span><span class="n">solvers</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">solver</span><span class="p">)]),</span> <span class="n">C1</span><span class="o">=</span><span class="n">C1</span><span class="p">,</span> <span class="n">C2</span><span class="o">=</span><span class="n">C2</span><span class="p">,</span> <span class="n">line_iters</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">batch_size</span><span class="o">=</span><span class="mi">500</span><span class="p">)</span>
+            <span class="n">lr</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X_train</span><span class="p">,</span> <span class="n">y_train</span><span class="p">)</span>
+            <span class="n">yhat</span> <span class="o">=</span> <span class="n">lr</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">X_test</span><span class="p">)</span>
 
-                <span class="n">end</span> <span class="o">=</span> <span class="nb">round</span><span class="p">(</span><span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span> <span class="o">*</span> <span class="mi">1000</span><span class="p">)</span>
+            <span class="n">end</span> <span class="o">=</span> <span class="nb">round</span><span class="p">(</span><span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span> <span class="o">*</span> <span class="mi">1000</span><span class="p">)</span>
 
-                <span class="n">settings</span> <span class="o">=</span> <span class="n">solver</span> <span class="o">+</span> <span class="s1">&#39; eta: &#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">eta</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39; C1: &#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">C1</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39; C2: &#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">C2</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39; iters: &#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">base_num_iters</span><span class="p">[</span><span class="n">solvers</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">solver</span><span class="p">)]</span> <span class="o">*</span> <span class="n">iter_multiplier</span><span class="p">)</span>
-                <span class="n">accuracy</span> <span class="o">=</span> <span class="n">get_accuracy</span><span class="p">(</span><span class="n">y_test</span><span class="p">,</span> <span class="n">yhat</span><span class="p">)</span>
-                <span class="n">time_taken</span> <span class="o">=</span> <span class="n">end</span> <span class="o">-</span> <span class="n">start</span>
+            <span class="n">settings</span> <span class="o">=</span> <span class="n">solver</span> <span class="o">+</span> <span class="s1">&#39; eta: &#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">eta</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39; C1: &#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">C1</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39; C2: &#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">C2</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39; iters: &#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">num_iters</span><span class="p">[</span><span class="n">solvers</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">solver</span><span class="p">)])</span>
+            <span class="n">accuracy</span> <span class="o">=</span> <span class="n">get_accuracy</span><span class="p">(</span><span class="n">y_test</span><span class="p">,</span> <span class="n">yhat</span><span class="p">)</span>
+            <span class="n">time_taken</span> <span class="o">=</span> <span class="n">end</span> <span class="o">-</span> <span class="n">start</span>
 
-                <span class="c1"># store the settings, accuracy, and time</span>
-                <span class="nb">print</span><span class="p">(</span><span class="n">settings</span> <span class="o">+</span> <span class="s1">&#39; accuracy: &#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">accuracy</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39; time: &#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">time_taken</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;ms&#39;</span><span class="p">)</span>
-                <span class="n">results</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">settings</span><span class="p">,</span> <span class="n">accuracy</span><span class="p">,</span> <span class="n">time_taken</span><span class="p">))</span>
+            <span class="c1"># store the settings, accuracy, and time</span>
+            <span class="c1"># print(settings + &#39; accuracy: &#39; + str(accuracy) + &#39; time: &#39; + str(time_taken) + &#39;ms&#39;)</span>
+            <span class="n">results</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">settings</span><span class="p">,</span> <span class="n">accuracy</span><span class="p">,</span> <span class="n">time_taken</span><span class="p">))</span>
+            <span class="n">outputs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">yhat</span><span class="p">)</span>
 
-
-            
+            <span class="c1"># print progress</span>
+            <span class="nb">print</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="nb">round</span><span class="p">((</span><span class="nb">len</span><span class="p">(</span><span class="n">results</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">solvers</span><span class="p">)</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">etas</span><span class="p">)</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">Cs</span><span class="p">)))</span> <span class="o">*</span> <span class="mi">100</span><span class="p">,</span> <span class="mi">2</span><span class="p">))</span> <span class="o">+</span> <span class="s1">&#39;</span><span class="si">% c</span><span class="s1">omplete&#39;</span><span class="p">,</span> <span class="n">end</span><span class="o">=</span><span class="s1">&#39;</span><span class="se">\r</span><span class="s1">&#39;</span><span class="p">)</span>
 </pre></div>
 
      </div>
@@ -15401,186 +15354,68 @@ Wall time: 291 ms
 
 
 <div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain">
-<pre>base eta: 0.001 C1: 0.0 C2: 0.0 iters: 100 accuracy: 40.197608 time: 555ms
-base eta: 0.001 C1: 0.01 C2: 0.0 iters: 100 accuracy: 47.269891 time: 299ms
-base eta: 0.001 C1: 0.0 C2: 0.01 iters: 100 accuracy: 40.197608 time: 299ms
-base eta: 0.001 C1: 0.01 C2: 0.01 iters: 100 accuracy: 43.629745 time: 298ms
-base eta: 0.01 C1: 0.0 C2: 0.0 iters: 100 accuracy: 41.679667 time: 298ms
-base eta: 0.01 C1: 0.01 C2: 0.0 iters: 100 accuracy: 46.229849 time: 298ms
-base eta: 0.01 C1: 0.0 C2: 0.01 iters: 100 accuracy: 41.679667 time: 298ms
-base eta: 0.01 C1: 0.01 C2: 0.01 iters: 100 accuracy: 46.463859 time: 298ms
-base eta: 0.1 C1: 0.0 C2: 0.0 iters: 100 accuracy: 46.957878 time: 300ms
-base eta: 0.1 C1: 0.01 C2: 0.0 iters: 100 accuracy: 51.664067 time: 299ms
-base eta: 0.1 C1: 0.0 C2: 0.01 iters: 100 accuracy: 46.931877 time: 299ms
-base eta: 0.1 C1: 0.01 C2: 0.01 iters: 100 accuracy: 48.855954 time: 299ms
-base eta: 0.001 C1: 0.0 C2: 0.0 iters: 500 accuracy: 40.951638 time: 1629ms
-base eta: 0.001 C1: 0.01 C2: 0.0 iters: 500 accuracy: 48.439938 time: 1640ms
-base eta: 0.001 C1: 0.0 C2: 0.01 iters: 500 accuracy: 40.951638 time: 1633ms
-base eta: 0.001 C1: 0.01 C2: 0.01 iters: 500 accuracy: 44.929797 time: 1641ms
-base eta: 0.01 C1: 0.0 C2: 0.0 iters: 500 accuracy: 45.475819 time: 1634ms
-base eta: 0.01 C1: 0.01 C2: 0.0 iters: 500 accuracy: 49.219969 time: 1630ms
-base eta: 0.01 C1: 0.0 C2: 0.01 iters: 500 accuracy: 45.475819 time: 1632ms
-base eta: 0.01 C1: 0.01 C2: 0.01 iters: 500 accuracy: 49.817993 time: 1628ms
-base eta: 0.1 C1: 0.0 C2: 0.0 iters: 500 accuracy: 47.73791 time: 1630ms
-base eta: 0.1 C1: 0.01 C2: 0.0 iters: 500 accuracy: 51.560062 time: 1667ms
-base eta: 0.1 C1: 0.0 C2: 0.01 iters: 500 accuracy: 47.789912 time: 1627ms
-base eta: 0.1 C1: 0.01 C2: 0.01 iters: 500 accuracy: 52.106084 time: 1631ms
-base eta: 0.001 C1: 0.0 C2: 0.0 iters: 1000 accuracy: 41.679667 time: 3290ms
-base eta: 0.001 C1: 0.01 C2: 0.0 iters: 1000 accuracy: 46.25585 time: 3302ms
-base eta: 0.001 C1: 0.0 C2: 0.01 iters: 1000 accuracy: 41.679667 time: 3292ms
-base eta: 0.001 C1: 0.01 C2: 0.01 iters: 1000 accuracy: 46.437858 time: 3291ms
-base eta: 0.01 C1: 0.0 C2: 0.0 iters: 1000 accuracy: 46.957878 time: 3293ms
-base eta: 0.01 C1: 0.01 C2: 0.0 iters: 1000 accuracy: 51.690068 time: 3292ms
-base eta: 0.01 C1: 0.0 C2: 0.01 iters: 1000 accuracy: 46.931877 time: 3291ms
-base eta: 0.01 C1: 0.01 C2: 0.01 iters: 1000 accuracy: 48.933957 time: 3290ms
-base eta: 0.1 C1: 0.0 C2: 0.0 iters: 1000 accuracy: 47.789912 time: 3293ms
-base eta: 0.1 C1: 0.01 C2: 0.0 iters: 1000 accuracy: 51.560062 time: 3292ms
-base eta: 0.1 C1: 0.0 C2: 0.01 iters: 1000 accuracy: 47.815913 time: 3293ms
-base eta: 0.1 C1: 0.01 C2: 0.01 iters: 1000 accuracy: 53.016121 time: 3295ms
-line_search eta: 0.001 C1: 0.0 C2: 0.0 iters: 20 accuracy: 40.327613 time: 506ms
-line_search eta: 0.001 C1: 0.01 C2: 0.0 iters: 20 accuracy: 47.425897 time: 399ms
-line_search eta: 0.001 C1: 0.0 C2: 0.01 iters: 20 accuracy: 40.327613 time: 398ms
-line_search eta: 0.001 C1: 0.01 C2: 0.01 iters: 20 accuracy: 43.811752 time: 396ms
-line_search eta: 0.01 C1: 0.0 C2: 0.0 iters: 20 accuracy: 43.135725 time: 412ms
-line_search eta: 0.01 C1: 0.01 C2: 0.0 iters: 20 accuracy: 46.957878 time: 417ms
-line_search eta: 0.01 C1: 0.0 C2: 0.01 iters: 20 accuracy: 43.161726 time: 415ms
-line_search eta: 0.01 C1: 0.01 C2: 0.01 iters: 20 accuracy: 47.477899 time: 426ms
-line_search eta: 0.1 C1: 0.0 C2: 0.0 iters: 20 accuracy: 45.657826 time: 419ms
-line_search eta: 0.1 C1: 0.01 C2: 0.0 iters: 20 accuracy: 49.50598 time: 421ms
-line_search eta: 0.1 C1: 0.0 C2: 0.01 iters: 20 accuracy: 40.275611 time: 420ms
-line_search eta: 0.1 C1: 0.01 C2: 0.01 iters: 20 accuracy: 51.430057 time: 423ms
-line_search eta: 0.001 C1: 0.0 C2: 0.0 iters: 100 accuracy: 41.523661 time: 2089ms
-line_search eta: 0.001 C1: 0.01 C2: 0.0 iters: 100 accuracy: 46.25585 time: 2136ms
-line_search eta: 0.001 C1: 0.0 C2: 0.01 iters: 100 accuracy: 41.575663 time: 2136ms
-line_search eta: 0.001 C1: 0.01 C2: 0.01 iters: 100 accuracy: 46.125845 time: 2154ms
-line_search eta: 0.01 C1: 0.0 C2: 0.0 iters: 100 accuracy: 46.697868 time: 2151ms
-line_search eta: 0.01 C1: 0.01 C2: 0.0 iters: 100 accuracy: 51.950078 time: 2157ms
-line_search eta: 0.01 C1: 0.0 C2: 0.01 iters: 100 accuracy: 46.723869 time: 2176ms
-line_search eta: 0.01 C1: 0.01 C2: 0.01 iters: 100 accuracy: 49.037962 time: 2170ms
-line_search eta: 0.1 C1: 0.0 C2: 0.0 iters: 100 accuracy: 45.137806 time: 2190ms
-line_search eta: 0.1 C1: 0.01 C2: 0.0 iters: 100 accuracy: 50.26001 time: 2157ms
-line_search eta: 0.1 C1: 0.0 C2: 0.01 iters: 100 accuracy: 47.867915 time: 2174ms
-line_search eta: 0.1 C1: 0.01 C2: 0.01 iters: 100 accuracy: 53.224129 time: 2167ms
-line_search eta: 0.001 C1: 0.0 C2: 0.0 iters: 200 accuracy: 43.083723 time: 4320ms
-line_search eta: 0.001 C1: 0.01 C2: 0.0 iters: 200 accuracy: 46.957878 time: 4255ms
-line_search eta: 0.001 C1: 0.0 C2: 0.01 iters: 200 accuracy: 43.109724 time: 4299ms
-line_search eta: 0.001 C1: 0.01 C2: 0.01 iters: 200 accuracy: 47.477899 time: 4339ms
-line_search eta: 0.01 C1: 0.0 C2: 0.0 iters: 200 accuracy: 47.685907 time: 4260ms
-line_search eta: 0.01 C1: 0.01 C2: 0.0 iters: 200 accuracy: 51.352054 time: 4298ms
-line_search eta: 0.01 C1: 0.0 C2: 0.01 iters: 200 accuracy: 47.659906 time: 4431ms
-line_search eta: 0.01 C1: 0.01 C2: 0.01 iters: 200 accuracy: 51.898076 time: 4732ms
-line_search eta: 0.1 C1: 0.0 C2: 0.0 iters: 200 accuracy: 47.087884 time: 4348ms
-line_search eta: 0.1 C1: 0.01 C2: 0.0 iters: 200 accuracy: 51.014041 time: 4295ms
-line_search eta: 0.1 C1: 0.0 C2: 0.01 iters: 200 accuracy: 47.191888 time: 4852ms
-line_search eta: 0.1 C1: 0.01 C2: 0.01 iters: 200 accuracy: 52.886115 time: 4305ms
-stochastic eta: 0.001 C1: 0.0 C2: 0.0 iters: 200 accuracy: 31.227249 time: 348ms
-stochastic eta: 0.001 C1: 0.01 C2: 0.0 iters: 200 accuracy: 37.103484 time: 347ms
-stochastic eta: 0.001 C1: 0.0 C2: 0.01 iters: 200 accuracy: 32.449298 time: 346ms
-stochastic eta: 0.001 C1: 0.01 C2: 0.01 iters: 200 accuracy: 29.927197 time: 350ms
-stochastic eta: 0.01 C1: 0.0 C2: 0.0 iters: 200 accuracy: 31.461258 time: 350ms
-stochastic eta: 0.01 C1: 0.01 C2: 0.0 iters: 200 accuracy: 33.281331 time: 350ms
-stochastic eta: 0.01 C1: 0.0 C2: 0.01 iters: 200 accuracy: 14.534581 time: 352ms
-stochastic eta: 0.01 C1: 0.01 C2: 0.01 iters: 200 accuracy: 35.881435 time: 347ms
-stochastic eta: 0.1 C1: 0.0 C2: 0.0 iters: 200 accuracy: 28.653146 time: 352ms
-stochastic eta: 0.1 C1: 0.01 C2: 0.0 iters: 200 accuracy: 14.274571 time: 351ms
-stochastic eta: 0.1 C1: 0.0 C2: 0.01 iters: 200 accuracy: 14.300572 time: 350ms
-stochastic eta: 0.1 C1: 0.01 C2: 0.01 iters: 200 accuracy: 14.274571 time: 348ms
-stochastic eta: 0.001 C1: 0.0 C2: 0.0 iters: 1000 accuracy: 44.955798 time: 2678ms
-stochastic eta: 0.001 C1: 0.01 C2: 0.0 iters: 1000 accuracy: 43.889756 time: 2742ms
-stochastic eta: 0.001 C1: 0.0 C2: 0.01 iters: 1000 accuracy: 42.823713 time: 2383ms
-stochastic eta: 0.001 C1: 0.01 C2: 0.01 iters: 1000 accuracy: 27.847114 time: 1785ms
-stochastic eta: 0.01 C1: 0.0 C2: 0.0 iters: 1000 accuracy: 28.159126 time: 1742ms
-stochastic eta: 0.01 C1: 0.01 C2: 0.0 iters: 1000 accuracy: 26.287051 time: 1736ms
-stochastic eta: 0.01 C1: 0.0 C2: 0.01 iters: 1000 accuracy: 23.218929 time: 1923ms
-stochastic eta: 0.01 C1: 0.01 C2: 0.01 iters: 1000 accuracy: 19.266771 time: 1727ms
-stochastic eta: 0.1 C1: 0.0 C2: 0.0 iters: 1000 accuracy: 28.237129 time: 1757ms
-stochastic eta: 0.1 C1: 0.01 C2: 0.0 iters: 1000 accuracy: 15.444618 time: 1782ms
-stochastic eta: 0.1 C1: 0.0 C2: 0.01 iters: 1000 accuracy: 14.300572 time: 1732ms
-stochastic eta: 0.1 C1: 0.01 C2: 0.01 iters: 1000 accuracy: 14.300572 time: 1806ms
-stochastic eta: 0.001 C1: 0.0 C2: 0.0 iters: 2000 accuracy: 43.655746 time: 3618ms
-stochastic eta: 0.001 C1: 0.01 C2: 0.0 iters: 2000 accuracy: 39.885595 time: 3407ms
-stochastic eta: 0.001 C1: 0.0 C2: 0.01 iters: 2000 accuracy: 41.341654 time: 5237ms
-stochastic eta: 0.001 C1: 0.01 C2: 0.01 iters: 2000 accuracy: 42.771711 time: 3521ms
-stochastic eta: 0.01 C1: 0.0 C2: 0.0 iters: 2000 accuracy: 14.274571 time: 4347ms
-stochastic eta: 0.01 C1: 0.01 C2: 0.0 iters: 2000 accuracy: 21.658866 time: 4242ms
-stochastic eta: 0.01 C1: 0.0 C2: 0.01 iters: 2000 accuracy: 14.300572 time: 5358ms
-stochastic eta: 0.01 C1: 0.01 C2: 0.01 iters: 2000 accuracy: 21.424857 time: 3955ms
-stochastic eta: 0.1 C1: 0.0 C2: 0.0 iters: 2000 accuracy: 23.192928 time: 3448ms
-stochastic eta: 0.1 C1: 0.01 C2: 0.0 iters: 2000 accuracy: 14.664587 time: 3626ms
-stochastic eta: 0.1 C1: 0.0 C2: 0.01 iters: 2000 accuracy: 14.300572 time: 3439ms
-stochastic eta: 0.1 C1: 0.01 C2: 0.01 iters: 2000 accuracy: 14.664587 time: 3420ms
-mini_batch eta: 0.001 C1: 0.0 C2: 0.0 iters: 20 accuracy: 27.769111 time: 89ms
-mini_batch eta: 0.001 C1: 0.01 C2: 0.0 iters: 20 accuracy: 20.306812 time: 89ms
-mini_batch eta: 0.001 C1: 0.0 C2: 0.01 iters: 20 accuracy: 27.015081 time: 92ms
-mini_batch eta: 0.001 C1: 0.01 C2: 0.01 iters: 20 accuracy: 23.426937 time: 91ms
-mini_batch eta: 0.01 C1: 0.0 C2: 0.0 iters: 20 accuracy: 28.575143 time: 91ms
-mini_batch eta: 0.01 C1: 0.01 C2: 0.0 iters: 20 accuracy: 30.967239 time: 93ms
-mini_batch eta: 0.01 C1: 0.0 C2: 0.01 iters: 20 accuracy: 27.535101 time: 90ms
-mini_batch eta: 0.01 C1: 0.01 C2: 0.01 iters: 20 accuracy: 31.201248 time: 91ms
-mini_batch eta: 0.1 C1: 0.0 C2: 0.0 iters: 20 accuracy: 28.393136 time: 93ms
-mini_batch eta: 0.1 C1: 0.01 C2: 0.0 iters: 20 accuracy: 14.040562 time: 90ms
-mini_batch eta: 0.1 C1: 0.0 C2: 0.01 iters: 20 accuracy: 24.544982 time: 91ms
-mini_batch eta: 0.1 C1: 0.01 C2: 0.01 iters: 20 accuracy: 17.836713 time: 94ms
-mini_batch eta: 0.001 C1: 0.0 C2: 0.0 iters: 100 accuracy: 15.470619 time: 458ms
-mini_batch eta: 0.001 C1: 0.01 C2: 0.0 iters: 100 accuracy: 28.575143 time: 439ms
-mini_batch eta: 0.001 C1: 0.0 C2: 0.01 iters: 100 accuracy: 32.475299 time: 436ms
-mini_batch eta: 0.001 C1: 0.01 C2: 0.01 iters: 100 accuracy: 30.551222 time: 441ms
-mini_batch eta: 0.01 C1: 0.0 C2: 0.0 iters: 100 accuracy: 26.885075 time: 447ms
-mini_batch eta: 0.01 C1: 0.01 C2: 0.0 iters: 100 accuracy: 33.801352 time: 616ms
-mini_batch eta: 0.01 C1: 0.0 C2: 0.01 iters: 100 accuracy: 40.353614 time: 556ms
-mini_batch eta: 0.01 C1: 0.01 C2: 0.01 iters: 100 accuracy: 23.036921 time: 439ms
-mini_batch eta: 0.1 C1: 0.0 C2: 0.0 iters: 100 accuracy: 14.300572 time: 440ms
-mini_batch eta: 0.1 C1: 0.01 C2: 0.0 iters: 100 accuracy: 28.445138 time: 438ms
-mini_batch eta: 0.1 C1: 0.0 C2: 0.01 iters: 100 accuracy: 14.274571 time: 439ms
-mini_batch eta: 0.1 C1: 0.01 C2: 0.01 iters: 100 accuracy: 14.300572 time: 501ms
-mini_batch eta: 0.001 C1: 0.0 C2: 0.0 iters: 200 accuracy: 36.661466 time: 874ms
-mini_batch eta: 0.001 C1: 0.01 C2: 0.0 iters: 200 accuracy: 33.541342 time: 1118ms
-mini_batch eta: 0.001 C1: 0.0 C2: 0.01 iters: 200 accuracy: 42.121685 time: 883ms
-mini_batch eta: 0.001 C1: 0.01 C2: 0.01 iters: 200 accuracy: 32.085283 time: 879ms
-mini_batch eta: 0.01 C1: 0.0 C2: 0.0 iters: 200 accuracy: 34.373375 time: 884ms
-mini_batch eta: 0.01 C1: 0.01 C2: 0.0 iters: 200 accuracy: 47.087884 time: 987ms
-mini_batch eta: 0.01 C1: 0.0 C2: 0.01 iters: 200 accuracy: 25.195008 time: 874ms
-mini_batch eta: 0.01 C1: 0.01 C2: 0.01 iters: 200 accuracy: 28.731149 time: 1352ms
-mini_batch eta: 0.1 C1: 0.0 C2: 0.0 iters: 200 accuracy: 15.028601 time: 874ms
-mini_batch eta: 0.1 C1: 0.01 C2: 0.0 iters: 200 accuracy: 28.575143 time: 1019ms
-mini_batch eta: 0.1 C1: 0.0 C2: 0.01 iters: 200 accuracy: 30.967239 time: 879ms
-mini_batch eta: 0.1 C1: 0.01 C2: 0.01 iters: 200 accuracy: 24.856994 time: 878ms
-newton eta: 0.001 C1: 0.0 C2: 0.0 iters: 1 accuracy: 63.75455 time: 151ms
-newton eta: 0.001 C1: 0.01 C2: 0.0 iters: 1 accuracy: 63.75455 time: 90ms
-newton eta: 0.001 C1: 0.0 C2: 0.01 iters: 1 accuracy: 63.75455 time: 74ms
-newton eta: 0.001 C1: 0.01 C2: 0.01 iters: 1 accuracy: 63.75455 time: 71ms
-newton eta: 0.01 C1: 0.0 C2: 0.0 iters: 1 accuracy: 63.75455 time: 64ms
-newton eta: 0.01 C1: 0.01 C2: 0.0 iters: 1 accuracy: 63.75455 time: 65ms
-newton eta: 0.01 C1: 0.0 C2: 0.01 iters: 1 accuracy: 63.75455 time: 65ms
-newton eta: 0.01 C1: 0.01 C2: 0.01 iters: 1 accuracy: 63.75455 time: 66ms
-newton eta: 0.1 C1: 0.0 C2: 0.0 iters: 1 accuracy: 63.75455 time: 65ms
-newton eta: 0.1 C1: 0.01 C2: 0.0 iters: 1 accuracy: 63.75455 time: 64ms
-newton eta: 0.1 C1: 0.0 C2: 0.01 iters: 1 accuracy: 63.75455 time: 65ms
-newton eta: 0.1 C1: 0.01 C2: 0.01 iters: 1 accuracy: 63.75455 time: 62ms
-newton eta: 0.001 C1: 0.0 C2: 0.0 iters: 5 accuracy: 63.75455 time: 308ms
-newton eta: 0.001 C1: 0.01 C2: 0.0 iters: 5 accuracy: 63.75455 time: 311ms
-newton eta: 0.001 C1: 0.0 C2: 0.01 iters: 5 accuracy: 63.75455 time: 314ms
-newton eta: 0.001 C1: 0.01 C2: 0.01 iters: 5 accuracy: 63.75455 time: 343ms
-newton eta: 0.01 C1: 0.0 C2: 0.0 iters: 5 accuracy: 63.598544 time: 312ms
-newton eta: 0.01 C1: 0.01 C2: 0.0 iters: 5 accuracy: 63.650546 time: 376ms
-newton eta: 0.01 C1: 0.0 C2: 0.01 iters: 5 accuracy: 63.624545 time: 367ms
-newton eta: 0.01 C1: 0.01 C2: 0.01 iters: 5 accuracy: 63.650546 time: 309ms
-newton eta: 0.1 C1: 0.0 C2: 0.0 iters: 5 accuracy: 63.806552 time: 434ms
-newton eta: 0.1 C1: 0.01 C2: 0.0 iters: 5 accuracy: 63.806552 time: 310ms
-newton eta: 0.1 C1: 0.0 C2: 0.01 iters: 5 accuracy: 63.806552 time: 312ms
-newton eta: 0.1 C1: 0.01 C2: 0.01 iters: 5 accuracy: 63.806552 time: 308ms
-newton eta: 0.001 C1: 0.0 C2: 0.0 iters: 10 accuracy: 63.728549 time: 620ms
-newton eta: 0.001 C1: 0.01 C2: 0.0 iters: 10 accuracy: 63.75455 time: 614ms
-newton eta: 0.001 C1: 0.0 C2: 0.01 iters: 10 accuracy: 63.728549 time: 621ms
-newton eta: 0.001 C1: 0.01 C2: 0.01 iters: 10 accuracy: 63.75455 time: 621ms
-newton eta: 0.01 C1: 0.0 C2: 0.0 iters: 10 accuracy: 63.546542 time: 626ms
-newton eta: 0.01 C1: 0.01 C2: 0.0 iters: 10 accuracy: 63.546542 time: 699ms
-newton eta: 0.01 C1: 0.0 C2: 0.01 iters: 10 accuracy: 63.572543 time: 647ms
-newton eta: 0.01 C1: 0.01 C2: 0.01 iters: 10 accuracy: 63.546542 time: 676ms
-newton eta: 0.1 C1: 0.0 C2: 0.0 iters: 10 accuracy: 64.456578 time: 653ms
-newton eta: 0.1 C1: 0.01 C2: 0.0 iters: 10 accuracy: 64.482579 time: 641ms
-newton eta: 0.1 C1: 0.0 C2: 0.01 iters: 10 accuracy: 64.482579 time: 612ms
-newton eta: 0.1 C1: 0.01 C2: 0.01 iters: 10 accuracy: 64.482579 time: 641ms
+<pre>100.0% complete</pre>
+</div>
+</div>
+
+</div>
+
+</div>
+
+</div>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
+<p>Here each solver is tested with different combinations of L1 and L2 regularzation. I also tested different eta values for each model as I found they could have a signifigant impact on the accuracy of the model. Overall, 160 models were tested. Running all of them on the reduced dataset and using the GPU takes ~5 minutes. Some data snooping was done to select the remaining values. This was done by manually testing values on individual solvers to get a feel for how number of iterations would effect both accuracy and run time. I selected values by trying to find ones that produced a high accuracy while still being fast. The hard coded values for line_iters and batch_size were selected the same way. My overall goal was to give every solver the best chance it could have without giving a large unfair advantage to one by letting it run significantly longer than the others.</p>
+
+</div>
+</div>
+</div>
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell   ">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[&nbsp;]:</div>
+<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+     <div class="CodeMirror cm-s-jupyter">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># calculate the average accuracy and time for each solver</span>
+<span class="k">for</span> <span class="n">solver</span> <span class="ow">in</span> <span class="n">solvers</span><span class="p">:</span>
+    <span class="n">accuracies</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">times</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">result</span> <span class="ow">in</span> <span class="n">results</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">result</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="n">solver</span><span class="p">):</span>
+            <span class="n">accuracies</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">result</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+            <span class="n">times</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">result</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span>
+
+    <span class="nb">print</span><span class="p">(</span><span class="n">solver</span> <span class="o">+</span> <span class="s1">&#39; average accuracy: &#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="nb">round</span><span class="p">(</span><span class="nb">sum</span><span class="p">(</span><span class="n">accuracies</span><span class="p">)</span> <span class="o">/</span> <span class="nb">len</span><span class="p">(</span><span class="n">accuracies</span><span class="p">),</span> <span class="mi">3</span><span class="p">))</span> <span class="o">+</span> <span class="s1">&#39; average time: &#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="nb">round</span><span class="p">(</span><span class="nb">sum</span><span class="p">(</span><span class="n">times</span><span class="p">)</span> <span class="o">/</span> <span class="nb">len</span><span class="p">(</span><span class="n">times</span><span class="p">)))</span> <span class="o">+</span> <span class="s1">&#39;ms&#39;</span><span class="p">)</span>
+</pre></div>
+
+     </div>
+</div>
+</div>
+</div>
+
+<div class="jp-Cell-outputWrapper">
+<div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
+</div>
+
+
+<div class="jp-OutputArea jp-Cell-outputArea">
+<div class="jp-OutputArea-child">
+    
+    <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+
+
+<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain">
+<pre>base average accuracy: 53.926 average time: 3325ms
+line_search average accuracy: 52.656 average time: 2268ms
+stochastic average accuracy: 48.412 average time: 2633ms
+mini_batch average accuracy: 50.947 average time: 959ms
+newton average accuracy: 55.053 average time: 179ms
 </pre>
 </div>
 </div>
@@ -15589,6 +15424,261 @@ newton eta: 0.1 C1: 0.01 C2: 0.01 iters: 10 accuracy: 64.482579 time: 641ms
 
 </div>
 
+</div>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
+<p>Here the average accuracy and run time of each solver can be seen. The base solver and line_search produce similar results because they use a similar approach. Notably, the line search runs faster as it requires fewer iterations due to its adaptive step size. Stochastic and mini_batch are much the same although the accuracy they reach is very dependent on the test/train split and the random values they select. As mini_batch takes the gradient over more samples it perfroms better more consistantly. Which of the first four solvers has the accuracy can change depending on the test/train split but base and line_search do better more often. Newton always performs both the best and the fastest. This is because of the few number of iterations required to reach a high accuracy and the fact that it used a second order approximation to the gradient. This means that it is able to find local minima much faster than the other solvers. It also benifits greatly from being able to run entirely on the GPU. Fewer iterations means that memory is copied to and from the GPU less often making it more efficient.</p>
+
+</div>
+</div>
+</div>
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell   ">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[&nbsp;]:</div>
+<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+     <div class="CodeMirror cm-s-jupyter">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># get the best settings for each solver</span>
+<span class="k">for</span> <span class="n">solver</span> <span class="ow">in</span> <span class="n">solvers</span><span class="p">:</span>
+    <span class="n">best_accuracy</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">best_time</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">best_settings</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+    <span class="k">for</span> <span class="n">result</span> <span class="ow">in</span> <span class="n">results</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">result</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="n">solver</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">result</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">&gt;</span> <span class="n">best_accuracy</span><span class="p">:</span>
+                <span class="n">best_accuracy</span> <span class="o">=</span> <span class="n">result</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+                <span class="n">best_time</span> <span class="o">=</span> <span class="n">result</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
+                <span class="n">best_settings</span> <span class="o">=</span> <span class="n">result</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="k">elif</span> <span class="n">result</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="n">best_accuracy</span> <span class="ow">and</span> <span class="n">result</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">best_time</span><span class="p">:</span>
+                <span class="n">best_accuracy</span> <span class="o">=</span> <span class="n">result</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+                <span class="n">best_time</span> <span class="o">=</span> <span class="n">result</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
+                <span class="n">best_settings</span> <span class="o">=</span> <span class="n">result</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Best settings for &#39;</span> <span class="o">+</span> <span class="n">best_settings</span> <span class="o">+</span> <span class="s1">&#39; accuracy: &#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="nb">round</span><span class="p">(</span><span class="n">best_accuracy</span><span class="p">,</span> <span class="mi">3</span><span class="p">))</span> <span class="o">+</span> <span class="s1">&#39; time: &#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">best_time</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;ms&#39;</span><span class="p">)</span>
+</pre></div>
+
+     </div>
+</div>
+</div>
+</div>
+
+<div class="jp-Cell-outputWrapper">
+<div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
+</div>
+
+
+<div class="jp-OutputArea jp-Cell-outputArea">
+<div class="jp-OutputArea-child">
+    
+    <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+
+
+<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain">
+<pre>Best settings for base eta: 3 C1: 0.0 C2: 0.0 iters: 1000 accuracy: 67.161 time: 3309ms
+Best settings for line_search eta: 1 C1: 0.0 C2: 0.0 iters: 150 accuracy: 65.159 time: 2293ms
+Best settings for stochastic eta: 3 C1: 0.01 C2: 0.0 iters: 1500 accuracy: 60.92 time: 2478ms
+Best settings for mini_batch eta: 3 C1: 0.0 C2: 0.0 iters: 200 accuracy: 62.923 time: 945ms
+Best settings for newton eta: 1 C1: 0.0 C2: 0.0 iters: 12 accuracy: 69.397 time: 172ms
+</pre>
+</div>
+</div>
+
+</div>
+
+</div>
+
+</div>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
+<p>When selecting the best solver looking at the high end for each solver can give a better picture of the optimal setting. Here both base and line_search start to look a lot better. Despite this newton always has the best model. One interesting thing to note is that higher eta valeus tend to do better. This is likely as they allow the odel to move around the space quicker and sometimes even let it move out of local minima. Across numerous runs C2 is almost always 0 for the best medels. C1 is often 0 but not always. This sugests that regularzation is not super helpful for this dataset.</p>
+
+</div>
+</div>
+</div>
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell   ">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[&nbsp;]:</div>
+<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+     <div class="CodeMirror cm-s-jupyter">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># sort the results by (accuracy / time) and print the top 10</span>
+<span class="n">results</span><span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">/</span> <span class="n">x</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="n">reverse</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">10</span><span class="p">):</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Settings: &#39;</span> <span class="o">+</span> <span class="n">results</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="s1">&#39; accuracy: &#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="nb">round</span><span class="p">(</span><span class="n">results</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="mi">1</span><span class="p">],</span> <span class="mi">3</span><span class="p">))</span> <span class="o">+</span> <span class="s1">&#39; time: &#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">results</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="mi">2</span><span class="p">])</span> <span class="o">+</span> <span class="s1">&#39;ms&#39;</span><span class="p">)</span>
+</pre></div>
+
+     </div>
+</div>
+</div>
+</div>
+
+<div class="jp-Cell-outputWrapper">
+<div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
+</div>
+
+
+<div class="jp-OutputArea jp-Cell-outputArea">
+<div class="jp-OutputArea-child">
+    
+    <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+
+
+<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain">
+<pre>Settings: newton eta: 1 C1: 0.0 C2: 0.0 iters: 12 accuracy: 69.397 time: 172ms
+Settings: newton eta: 0.3 C1: 0.01 C2: 0.01 iters: 12 accuracy: 68.487 time: 170ms
+Settings: newton eta: 0.3 C1: 0.0 C2: 0.0 iters: 12 accuracy: 68.565 time: 172ms
+Settings: newton eta: 0.3 C1: 0.0 C2: 0.01 iters: 12 accuracy: 68.487 time: 174ms
+Settings: newton eta: 0.3 C1: 0.01 C2: 0.0 iters: 12 accuracy: 68.565 time: 175ms
+Settings: newton eta: 0.003 C1: 0.01 C2: 0.01 iters: 12 accuracy: 63.287 time: 164ms
+Settings: newton eta: 0.1 C1: 0.0 C2: 0.01 iters: 12 accuracy: 65.211 time: 174ms
+Settings: newton eta: 0.03 C1: 0.01 C2: 0.0 iters: 12 accuracy: 63.521 time: 171ms
+Settings: newton eta: 0.001 C1: 0.01 C2: 0.01 iters: 12 accuracy: 63.287 time: 171ms
+Settings: newton eta: 0.1 C1: 0.0 C2: 0.0 iters: 12 accuracy: 65.237 time: 177ms
+</pre>
+</div>
+</div>
+
+</div>
+
+</div>
+
+</div>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
+<p>One last metric i've decided to use is the (accuracy / time). This shows which models give the best return for the time it took to train them. This metric is less important but still provides some interesting insight. Beacuse of it signifiagantly faster runtime, newton dominates this ranking</p>
+
+</div>
+</div>
+</div>
+</div>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
+<p>If it isn't clear by now, newton is the best solver. To compare with scikit learn I have selected the model with eta = 1 and C = 0. This is the model that has the best accuracy and a good (accuracy / time). This is the model that will be used for the rest of the project.</p>
+
+</div>
+</div>
+</div>
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell   ">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[&nbsp;]:</div>
+<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+     <div class="CodeMirror cm-s-jupyter">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">sk_times</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="n">sk_accuracies</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="n">times</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="n">accuracies</span> <span class="o">=</span> <span class="p">[]</span>
+
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">100</span><span class="p">):</span>
+    <span class="n">X_train</span><span class="p">,</span> <span class="n">X_test</span><span class="p">,</span> <span class="n">y_train</span><span class="p">,</span> <span class="n">y_test</span> <span class="o">=</span> <span class="n">train_test_split</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">train_size</span><span class="o">=</span><span class="mf">0.8</span><span class="p">,</span> <span class="n">test_size</span><span class="o">=</span><span class="mf">0.2</span><span class="p">,</span> <span class="n">stratify</span><span class="o">=</span><span class="n">y</span><span class="o">.</span><span class="n">get</span><span class="p">())</span>
+
+    <span class="n">start</span> <span class="o">=</span> <span class="nb">round</span><span class="p">(</span><span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span> <span class="o">*</span> <span class="mi">1000</span><span class="p">)</span>
+    <span class="n">lr_sk</span> <span class="o">=</span> <span class="n">SKLogisticRegression</span><span class="p">(</span><span class="n">solver</span><span class="o">=</span><span class="s1">&#39;liblinear&#39;</span><span class="p">)</span>
+    <span class="n">lr_sk</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X_train</span><span class="o">.</span><span class="n">get</span><span class="p">(),</span> <span class="n">y_train</span><span class="o">.</span><span class="n">get</span><span class="p">())</span>
+    <span class="n">yhat</span> <span class="o">=</span> <span class="n">lr_sk</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">X_test</span><span class="o">.</span><span class="n">get</span><span class="p">())</span>
+    <span class="n">end</span> <span class="o">=</span> <span class="nb">round</span><span class="p">(</span><span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span> <span class="o">*</span> <span class="mi">1000</span><span class="p">)</span>
+    <span class="n">sk_times</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">end</span> <span class="o">-</span> <span class="n">start</span><span class="p">)</span>
+    <span class="n">sk_accuracies</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">get_accuracy</span><span class="p">(</span><span class="n">y_test</span><span class="p">,</span> <span class="n">cp</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">yhat</span><span class="p">)))</span>
+
+    <span class="n">start</span> <span class="o">=</span> <span class="nb">round</span><span class="p">(</span><span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span> <span class="o">*</span> <span class="mi">1000</span><span class="p">)</span>
+    <span class="n">lr</span> <span class="o">=</span> <span class="n">LogisticRegression</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">solver</span><span class="o">=</span><span class="s1">&#39;newton&#39;</span><span class="p">,</span> <span class="n">iterations</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">C1</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">C2</span><span class="o">=</span><span class="mf">0.0</span><span class="p">)</span>
+    <span class="n">lr</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X_train</span><span class="p">,</span> <span class="n">y_train</span><span class="p">)</span>
+    <span class="n">yhat</span> <span class="o">=</span> <span class="n">lr</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">X_test</span><span class="p">)</span>
+    <span class="n">end</span> <span class="o">=</span> <span class="nb">round</span><span class="p">(</span><span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span> <span class="o">*</span> <span class="mi">1000</span><span class="p">)</span>
+    <span class="n">times</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">end</span> <span class="o">-</span> <span class="n">start</span><span class="p">)</span>
+    <span class="n">accuracies</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">get_accuracy</span><span class="p">(</span><span class="n">y_test</span><span class="p">,</span> <span class="n">yhat</span><span class="p">))</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Average time for sklearn: &#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="nb">round</span><span class="p">(</span><span class="nb">sum</span><span class="p">(</span><span class="n">sk_times</span><span class="p">)</span> <span class="o">/</span> <span class="nb">len</span><span class="p">(</span><span class="n">sk_times</span><span class="p">)))</span> <span class="o">+</span> <span class="s1">&#39;ms&#39;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Average time for custom: &#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="nb">round</span><span class="p">(</span><span class="nb">sum</span><span class="p">(</span><span class="n">times</span><span class="p">)</span> <span class="o">/</span> <span class="nb">len</span><span class="p">(</span><span class="n">times</span><span class="p">)))</span> <span class="o">+</span> <span class="s1">&#39;ms&#39;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Average accuracy for sklearn: &#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="nb">round</span><span class="p">(</span><span class="nb">sum</span><span class="p">(</span><span class="n">sk_accuracies</span><span class="p">)</span> <span class="o">/</span> <span class="nb">len</span><span class="p">(</span><span class="n">sk_accuracies</span><span class="p">),</span> <span class="mi">3</span><span class="p">)))</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Average accuracy for custom: &#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="nb">round</span><span class="p">(</span><span class="nb">sum</span><span class="p">(</span><span class="n">accuracies</span><span class="p">)</span> <span class="o">/</span> <span class="nb">len</span><span class="p">(</span><span class="n">accuracies</span><span class="p">),</span> <span class="mi">3</span><span class="p">)))</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Best accuracy for sklearn: &#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="nb">round</span><span class="p">(</span><span class="nb">max</span><span class="p">(</span><span class="n">sk_accuracies</span><span class="p">),</span> <span class="mi">3</span><span class="p">)))</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Best accuracy for custom: &#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="nb">round</span><span class="p">(</span><span class="nb">max</span><span class="p">(</span><span class="n">accuracies</span><span class="p">),</span> <span class="mi">3</span><span class="p">)))</span>
+</pre></div>
+
+     </div>
+</div>
+</div>
+</div>
+
+<div class="jp-Cell-outputWrapper">
+<div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
+</div>
+
+
+<div class="jp-OutputArea jp-Cell-outputArea">
+<div class="jp-OutputArea-child">
+    
+    <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+
+
+<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain">
+<pre>Average time for sklearn: 311ms
+Average time for custom: 196ms
+Average accuracy for sklearn: 68.495
+Average accuracy for custom: 69.555
+Best accuracy for sklearn: 69.709
+Best accuracy for custom: 71.243
+</pre>
+</div>
+</div>
+
+</div>
+
+</div>
+
+</div>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
+<p>In order to best compare my model to scikit learn I have performed more extencive testing using both. As the test/train split is random and accounts for a large amount of varience in the accurcay of both models I ran them both 100 times, each with a new test/train split. This is done to get a better idea of how they compare by isolating the models as a constant accross tests.</p>
+<p>As can be seen above, my model performs slightly better than scikit learns in accuracy. Although less important as both are fast, my model also consistantly runs faster by over 50%. The speed comparison isn't quite fair as my model runs on the GPU and theirs is multithreaded on the CPU.</p>
+<p>One reason for my model's better performance over scikit learns might be it's ability for custamization. Scikit learn's model is part of a large library and must me made in a way that perfroms well across a wide range of datasets. For my model, I was able to test many different option and select the best one based on it's performance on this dataset. Because if this my model is a better choice for this dataset.</p>
+
+</div>
+</div>
+</div>
+</div>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
+<hr />
+<p>Overall, when selecting a model to use for creating forests in realistic virtual enviroments the best choice is difficult. Between scikit learn and my model I would recomend mine everytime. But, the existing neural net model has a higher average accuracy at ~70.5%. The run time of this model is not known but unless it is signifigantly slower than mine speed would not be a major factor. One benifit my model has is realative simplicity and transparency. If these were desiarable traits to a delevoper the slightly lower accuracy could be worth it.</p>
+<p>While either model would likely work well enough, I would ultimately recomend using the existing neural net approach for the higher accuracy. The accuracy of this model is high enough to meet the standrds I laid out for use in realistic game world creation. Because no current approach has is close to 90% accuracy I would not recomend using any of these models for use in realistic virtual enviroments for the purpose of ecological research.</p>
+<p>One final note, the neural net model was made in 2000 and advancments in machine learning have been made since then. It may be that the best choice would not be to use an existing model but to create a new one that takes advantage of newer techniques.</p>
+
+</div>
+</div>
+</div>
 </div>
 </body>
 
