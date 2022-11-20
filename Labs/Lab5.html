@@ -14744,7 +14744,12 @@ body[data-format='mobile'] .jp-OutputArea-child .jp-OutputArea-output {
 <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Keras version: </span><span class="si">{</span><span class="n">keras</span><span class="o">.</span><span class="n">__version__</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 
 <span class="k">if</span> <span class="n">tf</span><span class="o">.</span><span class="n">test</span><span class="o">.</span><span class="n">gpu_device_name</span><span class="p">():</span>
-    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;GPU found&#39;</span><span class="p">)</span>
+    <span class="n">gpu_devices</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">list_physical_devices</span><span class="p">(</span><span class="s1">&#39;GPU&#39;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">gpu_devices</span><span class="p">:</span>
+        <span class="n">details</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">experimental</span><span class="o">.</span><span class="n">get_device_details</span><span class="p">(</span><span class="n">gpu_devices</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+        <span class="n">name</span> <span class="o">=</span> <span class="n">details</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;device_name&#39;</span><span class="p">,</span> <span class="s1">&#39;Unknown GPU&#39;</span><span class="p">)</span>
+    
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Using </span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 <span class="k">else</span><span class="p">:</span>
     <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;No GPU found&quot;</span><span class="p">)</span>
 </pre></div>
@@ -14770,7 +14775,7 @@ body[data-format='mobile'] .jp-OutputArea-child .jp-OutputArea-output {
 Num CPUs Available:  1
 Tensorflow version: 2.10.1
 Keras version: 2.10.0
-GPU found
+Using NVIDIA GeForce RTX 3070 Laptop GPU
 </pre>
 </div>
 </div>
